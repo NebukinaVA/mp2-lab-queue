@@ -31,8 +31,8 @@ template <class ValType>
 TQueue<ValType>::TQueue(int s)
 {
 	if ((s < 0) || (s > MAX_STACK_SIZE)) throw "Error";
-	Top = -1;
-	Bot = -1;
+	Top = 0;
+	Bot = 0;
 	Size = s;
 	pMem.reset(new ValType[Size]);
 }
@@ -45,28 +45,28 @@ TQueue<ValType>::~TQueue()
 template <class ValType> 
 bool TQueue<ValType>::BotBorder()
 {
-	if (Bot == -1) return true;
+	if (Bot == 0) return true;
 	return false;
 }
 
 template <class ValType> 
 bool TQueue<ValType>::TopBorder()
 {
-	if (Top == Size - 1) return true;
+	if (Top == Size) return true;
 	return false;
 }
 
 template <class ValType>
 bool TQueue<ValType>::IsEmpty()
 {
-	if ((Bot == -1) && (Top == -1)) return true;
+	if ((Bot == 0) && (Top == 0)) return true;
 	return false;
 }
 
 template <class ValType>
 bool TQueue<ValType>::IsFull()
 {
-	if ((Top == Size - 1) && (Bot == 0)) return true;
+	if ((Top == Size) && (Bot == 1)) return true;
 	if ((!IsEmpty()) && (Top == Bot)) return true;
 	return false;
 }
@@ -75,7 +75,7 @@ template <class ValType>
 void TQueue<ValType>::Push(ValType elem)
 {
 	if (IsFull()) throw "Error"; //repack
-	if (TopBorder()) Top = -1;
+	if (TopBorder()) Top = 0;
 	Top = Top + 1;
 	pMem[Top] = elem;
 }
@@ -84,7 +84,7 @@ template <class ValType>
 void TQueue<ValType>::Pop()
 {
 	if (IsEmpty()) throw "Error"; 
-	if (BotBorder()) Bot = Size;
+	if (BotBorder()) Bot = Size - 1;
 	Bot = Bot - 1;
 }
 
