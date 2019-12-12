@@ -75,7 +75,7 @@ bool TQueue<ValType>::IsFull()
 template <class ValType> 
 void TQueue<ValType>::Push(ValType elem)
 {
-	if (IsFull()) Repack(); //repack
+	if (IsFull()) Repack();
 	if (TopBorder()) Top = 0;
 	Top = Top + 1;
 	pMem[Top] = elem;
@@ -97,8 +97,7 @@ void TQueue<ValType>::Repack()
 	for (int i = 0; i < Size; i++)
 		ptemp[i] = pMem[i];
 	Size = Size * 2;
-	pMem.reset(new ValType[Size * 2]);
-	pMem = move(ptemp);
+	pMem.swap(ptemp);
 }
 
 

@@ -42,7 +42,14 @@ TEST(TQueue, can_check_if_empty)
 	TQueue<int> q;
 	EXPECT_TRUE(q.IsEmpty());
 }
-/*
+
+TEST(TQueue, can_check_if_not_full)
+{
+	TQueue<int> q;
+	q.Push(1);
+	EXPECT_FALSE(q.IsFull());
+}
+
 TEST(TQueue, can_check_if_full)
 {
 	TQueue<int> q(5);
@@ -52,4 +59,4 @@ TEST(TQueue, can_check_if_full)
 	q.Push(4);
 	q.Push(5);
 	EXPECT_TRUE(q.IsFull());
-}*/
+}
