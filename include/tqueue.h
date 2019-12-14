@@ -18,6 +18,7 @@ class TQueue
 	int Bot;
 public:
 	TQueue(int s = 6);
+//	TQueue(const TQueue &q);
 	~TQueue();
 	void Pop();                         // убрать элемент
 	void Push(ValType elem);            // добавить элемент 
@@ -26,6 +27,8 @@ public:
 	bool IsEmpty();
 	bool IsFull();
 	void Repack();
+//	bool operator==(const TQueue &q) const;
+	ValType operator[](int pos);
 };
 
 template <class ValType>
@@ -37,7 +40,17 @@ TQueue<ValType>::TQueue(int s)
 	Size = s;
 	pMem.reset(new ValType[Size]);
 }
-
+/*
+template <class ValType>
+TQueue<ValType>::TQueue(const TQueue<ValType> &q) 
+{
+	Size = q.Size;
+	TopElem = s.TopElem;
+	pStack = new ValType[Size];
+	for (int i = 0; i < Size; i++)
+		pStack[i] = s.pStack[i];
+}
+*/
 template <class ValType>
 TQueue<ValType>::~TQueue()
 {
@@ -78,7 +91,7 @@ void TQueue<ValType>::Push(ValType elem)
 	if (IsFull()) Repack();
 	if (TopBorder()) Top = 0;
 	Top = Top + 1;
-	pMem[Top] = elem;
+	pMem[Top - 1] = elem;
 }
 
 template <class ValType> 
@@ -96,9 +109,35 @@ void TQueue<ValType>::Repack()
 	ptemp.reset(new ValType[Size * 2]);
 	for (int i = 0; i < Size; i++)
 		ptemp[i] = pMem[i];
+	Bot = 1;
+	Top = Size;
 	Size = Size * 2;
 	pMem.swap(ptemp);
 }
+
+template <class ValType>
+ValType TQueue<ValType>::operator[](int pos)
+{
+	if ((pos < Bot) || (pos > Top)) throw "error";
+	return pMem[pos];
+}
+/*
+template <class ValType>
+bool TQueue<ValType>::operator==(const TQueue &q) const
+{
+	bool flag = true;
+	if ((Bot != q.Bot) || (Top != q.Top)) return false;
+	for (int i = 0; i <= Top; i++)
+	{
+		if (pMem[i] != q.pMem[i])
+		{
+			flag = false;
+			break;
+		}
+	}
+	return flag;
+}
+*/
 
 
 #endif

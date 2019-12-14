@@ -60,3 +60,21 @@ TEST(TQueue, can_check_if_full)
 	q.Push(5);
 	EXPECT_TRUE(q.IsFull());
 }
+
+TEST(TQueue, can_push_correctly)
+{ 
+	TQueue<int> q(5);
+	q.Push(1);
+	q.Push(2);
+	q.Push(3);
+	q.Push(4);
+	q.Push(5);
+	q.Pop();
+	q.Pop();
+	q.Pop();
+	q.Push(6);
+	q.Push(7);
+	q.Push(8);
+	EXPECT_EQ(q[4], 5);
+
+}
