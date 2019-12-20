@@ -70,11 +70,11 @@ TEST(TQueue, can_push_correctly)
 	q.Push(4);
 	q.Push(5);
 	q.Pop();
-	q.Pop();
-	q.Pop();
 	q.Push(6);
 	q.Push(7);
 	q.Push(8);
-	EXPECT_EQ(q[4], 5);
+	q.Push(9);
+	q.Pop();
+	EXPECT_EQ(6, q[4]);
 
 }

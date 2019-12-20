@@ -59,7 +59,7 @@ TQueue<ValType>::~TQueue()
 template <class ValType> 
 bool TQueue<ValType>::BotBorder()
 {
-	if (Bot == 0) return true;
+	if (Bot == Size) return true;
 	return false;
 }
 
@@ -98,8 +98,8 @@ template <class ValType>
 void TQueue<ValType>::Pop()
 {
 	if (IsEmpty()) throw "Error"; 
-	if (BotBorder()) Bot = Size;
-	Bot = Bot - 1;
+	if (BotBorder()) Bot = 0;
+	Bot = Bot + 1;
 }
 
 template <class ValType>
@@ -107,8 +107,16 @@ void TQueue<ValType>::Repack()
 {
 	unique_ptr <ValType[]> ptemp;
 	ptemp.reset(new ValType[Size * 2]);
-	for (int i = 0; i < Size; i++)
-		ptemp[i] = pMem[i];
+	int k = 0;
+	for (int i = Bot; i < Size; i++) {
+		ptemp[k] = pMem[i];
+		k++;
+	}
+	for (int i = 0; i < Bot; i++)
+	{
+		ptemp[k] = pMem[i];
+		k++;
+	}
 	Bot = 1;
 	Top = Size;
 	Size = Size * 2;
