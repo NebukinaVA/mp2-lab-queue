@@ -6,7 +6,7 @@
 
 using namespace std;
 
-const int MAX_STACK_SIZE = 10000;
+const int MAX_SIZE = 10000;
 
 // ОЧЕРЕДЬ НА ЦИКЛИЧЕСКОМ МАССИВЕ
 template <class ValType>
@@ -14,10 +14,11 @@ class TQueue
 {
 	unique_ptr <ValType[]> pMem;
 	int Size;
-	int Top; //пусть указывает на элемент + 1
+	int Top; 
 	int Bot;
 public:
 	TQueue(int s = 6);
+//	TQueue(const TQueue &q);
 	~TQueue();
 	void Pop();                         // убрать элемент
 	void Push(ValType elem);            // добавить элемент 
@@ -25,18 +26,31 @@ public:
 	bool BotBorder();
 	bool IsEmpty();
 	bool IsFull();
+	void Repack();
+//	bool operator==(const TQueue &q) const;
+	ValType operator[](int pos);
 };
 
 template <class ValType>
 TQueue<ValType>::TQueue(int s)
 {
-	if ((s < 0) || (s > MAX_STACK_SIZE)) throw "Error";
-	Top = -1;
-	Bot = -1;
+	if ((s < 0) || (s > MAX_SIZE)) throw "Error";
+	Top = 0;
+	Bot = 0;
 	Size = s;
 	pMem.reset(new ValType[Size]);
 }
-
+/*
+template <class ValType>
+TQueue<ValType>::TQueue(const TQueue<ValType> &q) 
+{
+	Size = q.Size;
+	TopElem = s.TopElem;
+	pStack = new ValType[Size];
+	for (int i = 0; i < Size; i++)
+		pStack[i] = s.pStack[i];
+}
+*/
 template <class ValType>
 TQueue<ValType>::~TQueue()
 {
@@ -45,28 +59,28 @@ TQueue<ValType>::~TQueue()
 template <class ValType> 
 bool TQueue<ValType>::BotBorder()
 {
-	if (Bot == -1) return true;
+	if (Bot == Size) return true;
 	return false;
 }
 
 template <class ValType> 
 bool TQueue<ValType>::TopBorder()
 {
-	if (Top == Size - 1) return true;
+	if (Top == Size) return true;
 	return false;
 }
 
 template <class ValType>
 bool TQueue<ValType>::IsEmpty()
 {
-	if ((Bot == -1) && (Top == -1)) return true;
+	if ((Bot == 0) && (Top == 0)) return true;
 	return false;
 }
 
 template <class ValType>
 bool TQueue<ValType>::IsFull()
 {
-	if ((Top == Size - 1) && (Bot == 0)) return true;
+	if ((Top == Size) && (Bot == 0)) return true;
 	if ((!IsEmpty()) && (Top == Bot)) return true;
 	return false;
 }
@@ -74,19 +88,64 @@ bool TQueue<ValType>::IsFull()
 template <class ValType> 
 void TQueue<ValType>::Push(ValType elem)
 {
-	if (IsFull()) throw "Error"; //repack
-	if (TopBorder()) Top = -1;
+	if (IsFull()) Repack();
+	if (TopBorder()) Top = 0;
 	Top = Top + 1;
-	pMem[Top] = elem;
+	pMem[Top - 1] = elem;
 }
 
 template <class ValType> 
 void TQueue<ValType>::Pop()
 {
 	if (IsEmpty()) throw "Error"; 
-	if (BotBorder()) Bot = Size;
-	Bot = Bot - 1;
+	if (BotBorder()) Bot = 0;
+	Bot = Bot + 1;
 }
+
+template <class ValType>
+void TQueue<ValType>::Repack()
+{
+	unique_ptr <ValType[]> ptemp;
+	ptemp.reset(new ValType[Size * 2]);
+	int k = 0;
+	for (int i = Bot; i < Size; i++) {
+		ptemp[k] = pMem[i];
+		k++;
+	}
+	for (int i = 0; i < Bot; i++)
+	{
+		ptemp[k] = pMem[i];
+		k++;
+	}
+	Bot = 1;
+	Top = Size;
+	Size = Size * 2;
+	pMem.swap(ptemp);
+}
+
+template <class ValType>
+ValType TQueue<ValType>::operator[](int pos)
+{
+	if ((pos < Bot) || (pos > Top)) throw "error";
+	return pMem[pos];
+}
+/*
+template <class ValType>
+bool TQueue<ValType>::operator==(const TQueue &q) const
+{
+	bool flag = true;
+	if ((Bot != q.Bot) || (Top != q.Top)) return false;
+	for (int i = 0; i <= Top; i++)
+	{
+		if (pMem[i] != q.pMem[i])
+		{
+			flag = false;
+			break;
+		}
+	}
+	return flag;
+}
+*/
 
 
 #endif
